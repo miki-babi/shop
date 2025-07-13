@@ -9,7 +9,7 @@
 </head>
 <body>
     <div id="app">
-        <welcome-component></welcome-component>
+        <livewire:create-post />
     </div>
 </body>
 </html>
