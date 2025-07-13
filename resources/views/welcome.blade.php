@@ -11,6 +11,5 @@
     <div id="app">
         <welcome-component></welcome-component>
     </div>
-    <script src="{{ mix('js/app.js') }}" defer></script>
 </body>
 </html>
