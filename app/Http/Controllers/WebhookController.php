@@ -13,10 +13,10 @@ class WebhookController extends Controller
         $data = $request->all();
         $status = $data['status'] ?? null;
         $order_id = $data['id'] ?? null;
-        if ($status === null || $order_id === null) {
-            Log::warning("Webhook from $store: Missing status or order_id");
-            return response()->json(['error' => 'Invalid payload'], 400);
-        }
+        // if ($status === null || $order_id === null) {
+        //     Log::warning("Webhook from $store: Missing status or order_id");
+        //     return response()->json(['error' => 'Invalid payload'], 400);
+        // }
 
 
 
