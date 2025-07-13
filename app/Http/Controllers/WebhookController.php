@@ -17,6 +17,7 @@ class WebhookController extends Controller
         //     Log::warning("Webhook from $store: Missing status or order_id");
         //     return response()->json(['error' => 'Invalid payload'], 400);
         // }
+        Log::info("Webhook from $store: Received payload", $data);
 
 
 
