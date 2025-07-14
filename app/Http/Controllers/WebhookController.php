@@ -28,13 +28,58 @@ class WebhookController extends Controller
                 $storeId = Shop::where('name', $store)->first()->id ?? null;
                 Log::debug("Resolved storeId", ['storeId' => $storeId]);
 
+                // Hardcoded sender details
+                $sender = [
+                    'SenderName' => 'Your Company Name',
+                    'SenderAddress' => 'Your Address',
+                    'SenderPostcode' => '12345',
+                    'SenderCity' => 'Your City',
+                    'SenderPhone' => '1234567890',
+                    'SenderEmail' => 'sender@example.com',
+                    'SenderPOBox' => 'PO123'
+                ];
+
+                // Extract recipient details from WooCommerce webhook
+                $recipient = [
+                    'RecipientName' => $data['shipping']['name'] ?? '',
+                    'RecipientAddress' => $data['shipping']['address_1'] ?? '',
+                    'RecipientPostcode' => $data['shipping']['postcode'] ?? '',
+                    'RecipientCity' => $data['shipping']['city'] ?? '',
+                    'RecipientPhone' => $data['shipping']['phone'] ?? '',
+                    'RecipientEmail' => $data['shipping']['email'] ?? '',
+                    'RecipientPOBox' => $data['shipping']['po_box'] ?? '',
+                ];
+
                 $order = Order::create([
-                    'shop_id' => $storeId, // Assuming $store is the shop ID
+                    'shop_id' => $storeId,
                     'order_id' => $order_id,
-                    'unique_mailitem_id' => $data['unique_mailitem_id'] ?? null,
-                    'identifier' => $data['identifier'] ?? null,
+                    'unique_mailitem_id' => $data['unique_mailitem_id'] ?? '',
+                    'identifier' => $data['identifier'] ?? '',
                     'event' => $status,
-                    // Add other fields as needed
+                    'ForceDuplicate' => 'false',
+                    'MailProductType' => $data['mail_product_type'] ?? '',
+                    'EventType' => $data['event_type'] ?? '',
+                    'Username' => $data['username'] ?? '',
+                    'Facility' => $data['facility'] ?? '',
+                    'Timestamp' => $data['timestamp'] ?? '',
+                    'Weight' => $data['weight'] ?? '',
+                    'Condition' => $data['condition'] ?? '',
+                    // Sender fields
+                    'SenderName' => $sender['SenderName'],
+                    'SenderAddress' => $sender['SenderAddress'],
+                    'SenderPostcode' => $sender['SenderPostcode'],
+                    'SenderCity' => $sender['SenderCity'],
+                    'SenderPhone' => $sender['SenderPhone'],
+                    'SenderEmail' => $sender['SenderEmail'],
+                    'SenderPOBox' => $sender['SenderPOBox'],
+                    // Recipient fields
+                    'RecipientName' => $recipient['RecipientName'],
+                    'RecipientAddress' => $recipient['RecipientAddress'],
+                    'RecipientPostcode' => $recipient['RecipientPostcode'],
+                    'RecipientCity' => $recipient['RecipientCity'],
+                    'RecipientPhone' => $recipient['RecipientPhone'],
+                    'RecipientEmail' => $recipient['RecipientEmail'],
+                    'RecipientPOBox' => $recipient['RecipientPOBox'],
                 ]);
                 Log::info("Order created", ['order_db_id' => $order->id]);
             }
