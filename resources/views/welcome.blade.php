@@ -9,7 +9,6 @@
 </head>
 <body>
     <div id="app">
-        <livewire:create-post />
     </div>
 </body>
 </html>
