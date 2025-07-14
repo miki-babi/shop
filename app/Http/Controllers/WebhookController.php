@@ -6,6 +6,8 @@ use App\Models\Order;
 use App\Models\Shop;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http; // Make sure this is at the top
+
 
 class WebhookController extends Controller
 {
@@ -15,7 +17,7 @@ class WebhookController extends Controller
         $data = $request->all();
         $status = $data['status'] ?? null;
         $order_id = $data['id'] ?? null;
-        
+
         Log::info("Webhook from $store: Received payload", $data);
 
         Log::debug("Extracted status: ", ['status' => $status]);
@@ -82,6 +84,38 @@ class WebhookController extends Controller
                     'RecipientPOBox' => $recipient['RecipientPOBox'],
                 ]);
                 Log::info("Order created", ['order_db_id' => $order->id]);
+
+                function makeTokenRequest()
+                {
+                    $url = 'https://dpstest.ethio.post:8200/identity/connect/token?returnUserInfo=true';
+
+                    // Replace with your actual values
+                    $formParams = [
+                        'client_id' => 'External',
+
+                        'grant_type' => 'grant_type', // or as required by the API
+                        // add other params if needed
+                        'username' => 'EASTAFRIAPI_USER',
+                        'password' => 'Besh@Test1',
+                    ];
+
+                    try {
+                        $response = Http::asForm()->post($url, $formParams);
+
+                        Log::info('Token API response', [
+                            'status' => $response->status(),
+                            'body' => $response->body(),
+                        ]);
+                        return $response->json();
+                    } catch (\Exception $e) {
+                        Log::error('Error making token API request', [
+                            'message' => $e->getMessage(),
+                            'trace' => $e->getTraceAsString(),
+                        ]);
+                        return null;
+                    }
+                }
+                makeTokenRequest();
             }
 
             if ($status === 'completed') {
