@@ -9,4 +9,15 @@ class Order extends Model
 {
     /** @use HasFactory<\Database\Factories\OrderFactory> */
     use HasFactory;
+    protected $fillable = [
+        'shop_id',
+        'order_id',
+        'unique_mailitem_id',
+        'identifier',
+        'event',
+    ];
+    public function shop()
+    {
+        return $this->belongsTo(Shop::class);
+    }
 }

@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('shop_id')->constrained()->onDelete('cascade');
+            $table->string('order_id');
+            $table->string('unique_mailitem_id');
+            $table->string('identifier');
+            $table->string('event');
             $table->timestamps();
         });
     }
