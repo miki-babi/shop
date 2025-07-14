@@ -18,6 +18,29 @@ return new class extends Migration
             $table->string('unique_mailitem_id');
             $table->string('identifier');
             $table->string('event');
+            $table->string('ForceDuplicate')->nullable();
+            $table->string('MailProductType')->nullable();
+            $table->string('EventType')->nullable();
+            $table->string('Username')->nullable();
+            $table->string('Facility')->nullable();
+            $table->string('Timestamp')->nullable();
+            $table->string('Weight')->nullable();
+            $table->string('Condition')->nullable();
+            // Sender fields
+            $table->string('SenderName')->nullable();
+            $table->string('SenderAddress')->nullable();
+            $table->string('SenderPostcode')->nullable();
+            $table->string('SenderCity')->nullable();
+            $table->string('SenderPhone')->nullable();
+            $table->string('SenderEmail')->nullable();
+            $table->string('SenderPOBox')->nullable();
+            $table->string('RecipientName')->nullable();
+            $table->string('RecipientAddress')->nullable();
+            $table->string('RecipientPostcode')->nullable();
+            $table->string('RecipientCity')->nullable();
+            $table->string('RecipientPhone')->nullable();
+            $table->string('RecipientEmail')->nullable();
+            $table->string('RecipientPOBox')->nullable();
             $table->timestamps();
         });
     }
