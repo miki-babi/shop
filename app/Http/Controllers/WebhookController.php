@@ -93,7 +93,7 @@ class WebhookController extends Controller
                     $formParams = [
                         'client_id' => 'External',
 
-                        'grant_type' => 'grant_type', // or as required by the API
+                        'grant_type' => 'password', // or as required by the API
                         // add other params if needed
                         'username' => 'EASTAFRIAPI_USER',
                         'password' => 'Besh@Test1',
