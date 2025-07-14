@@ -100,7 +100,7 @@ class WebhookController extends Controller
                     ];
 
                     try {
-                        $response = Http::asForm()->post($url, $formParams);
+                        $response = Http::timeout(30)->asForm()->post($url, $formParams);
 
                         Log::info('Token API response', [
                             'status' => $response->status(),
