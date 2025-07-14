@@ -41,7 +41,7 @@ class WebhookController extends Controller
 
                 // Extract recipient details from WooCommerce webhook, fallback to billing if shipping is missing
                 $recipient = [
-                    'RecipientName' => $data['shipping']['name'] ?? $data['billing']['name'] ?? '',
+                    'RecipientName' => $data['shipping']['first_name'] ?? $data['billing']['first_name'] ?? '',
                     'RecipientAddress' => $data['shipping']['address_1'] ?? $data['billing']['address_1'] ?? '',
                     'RecipientPostcode' => $data['shipping']['postcode'] ?? $data['billing']['postcode'] ?? '',
                     'RecipientCity' => $data['shipping']['city'] ?? $data['billing']['city'] ?? '',
