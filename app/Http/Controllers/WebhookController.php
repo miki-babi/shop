@@ -39,15 +39,15 @@ class WebhookController extends Controller
                     'SenderPOBox' => 'PO123'
                 ];
 
-                // Extract recipient details from WooCommerce webhook
+                // Extract recipient details from WooCommerce webhook, fallback to billing if shipping is missing
                 $recipient = [
-                    'RecipientName' => $data['shipping']['name'] ?? '',
-                    'RecipientAddress' => $data['shipping']['address_1'] ?? '',
-                    'RecipientPostcode' => $data['shipping']['postcode'] ?? '',
-                    'RecipientCity' => $data['shipping']['city'] ?? '',
-                    'RecipientPhone' => $data['shipping']['phone'] ?? '',
-                    'RecipientEmail' => $data['shipping']['email'] ?? '',
-                    'RecipientPOBox' => $data['shipping']['po_box'] ?? '',
+                    'RecipientName' => $data['shipping']['name'] ?? $data['billing']['name'] ?? '',
+                    'RecipientAddress' => $data['shipping']['address_1'] ?? $data['billing']['address_1'] ?? '',
+                    'RecipientPostcode' => $data['shipping']['postcode'] ?? $data['billing']['postcode'] ?? '',
+                    'RecipientCity' => $data['shipping']['city'] ?? $data['billing']['city'] ?? '',
+                    'RecipientPhone' => $data['shipping']['phone'] ?? $data['billing']['phone'] ?? '',
+                    'RecipientEmail' => $data['shipping']['email'] ?? $data['billing']['email'] ?? '',
+                    'RecipientPOBox' => $data['shipping']['po_box'] ?? $data['billing']['po_box'] ?? '',
                 ];
 
                 $order = Order::create([
