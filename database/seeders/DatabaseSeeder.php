@@ -19,5 +19,9 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        \App\Models\Shop::create(['name' => 'mexico']);
+        \App\Models\Shop::create(['name' => 'kadisco']);
+        \App\Models\Shop::create(['name' => 'ayat']);
     }
 }

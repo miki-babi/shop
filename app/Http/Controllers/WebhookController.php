@@ -18,29 +18,37 @@ class WebhookController extends Controller
         
         Log::info("Webhook from $store: Received payload", $data);
 
-        // Process based on status
-        if ($status === 'shipment-ready') {
-            // Run your logic here (e.g., notify, update DB, etc.)
-        // Log::info("Webhook from $store: Order $order_id is $status");
-        $storeId= Shop::where('name', $store)->first()->id ?? null;
+        Log::debug("Extracted status: ", ['status' => $status]);
+        Log::debug("Extracted order_id: ", ['order_id' => $order_id]);
 
-        Order::create([
-            'shop_id' => $storeId, // Assuming $store is the shop ID
-            'order_id' => $order_id,
-            'unique_mailitem_id' => $data['unique_mailitem_id'] ?? null,
-            'identifier' => $data['identifier'] ?? null,
-            'event' => $status,
-            
-        ]);
+        try {
+            // Process based on status
+            if ($status === 'shipment-ready') {
+                Log::info("Processing shipment-ready for order", ['order_id' => $order_id, 'store' => $store]);
+                $storeId = Shop::where('name', $store)->first()->id ?? null;
+                Log::debug("Resolved storeId", ['storeId' => $storeId]);
 
-        }
+                $order = Order::create([
+                    'shop_id' => $storeId, // Assuming $store is the shop ID
+                    'order_id' => $order_id,
+                    'unique_mailitem_id' => $data['unique_mailitem_id'] ?? null,
+                    'identifier' => $data['identifier'] ?? null,
+                    'event' => $status,
+                    // Add other fields as needed
+                ]);
+                Log::info("Order created", ['order_db_id' => $order->id]);
+            }
 
-
-        // Process based on status
-        if ($status === 'completed') {
-            // Run your logic here (e.g., notify, update DB, etc.)
-        Log::info("Webhook from $store: Order $order_id is $status");
-
+            if ($status === 'completed') {
+                Log::info("Webhook from $store: Order $order_id is $status");
+            }
+        } catch (\Exception $e) {
+            Log::error("Error processing webhook", [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'data' => $data
+            ]);
+            return response()->json(['error' => 'Internal server error'], 500);
         }
 
         return response()->json(['received' => true]);
