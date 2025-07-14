@@ -100,7 +100,9 @@ class WebhookController extends Controller
                     ];
 
                     try {
-                        $response = Http::timeout(30)->asForm()->post($url, $formParams);
+                        $response = Http::timeout(30)->asForm()
+                            ->withOptions(['verify' => false]) // <-- this skips SSL cert validation
+                            ->post($url, $formParams);
 
                         Log::info('Token API response', [
                             'status' => $response->status(),
