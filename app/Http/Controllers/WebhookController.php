@@ -94,7 +94,7 @@ class WebhookController extends Controller
                         'client_id' => 'External',
 
                         'grant_type' => 'password', // or as required by the API
-                        // add other params if needed
+                        
                         'username' => 'EASTAFRIAPI_USER',
                         'password' => 'Besh@Test1',
                     ];

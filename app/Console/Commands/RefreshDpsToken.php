@@ -73,9 +73,9 @@ class RefreshDpsToken extends Command
                 }
             } catch (\Exception $e) {
                 $attempt++;
-                Log::error('DPS token request failed', ['error' => $e->getMessage(), 'attempt' => $attempt]);
+                // Log::error('DPS token request failed', ['error' => $e->getMessage(), 'attempt' => $attempt]);
                 $this->error('Request failed on attempt ' . $attempt . '. Retrying...');
-                sleep(1); // Wait 1 second before retrying
+                // sleep(1); // Wait 1 second before retrying
             }
         }
     }
