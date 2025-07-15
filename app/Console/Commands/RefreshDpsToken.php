@@ -52,6 +52,9 @@ class RefreshDpsToken extends Command
         ];
 
         for ($i = 1; $i <= 2; $i++) {
+            if ($i === 2) {
+                sleep(2); // Wait 2 seconds before requesting the second token
+            }
             $success = false;
             $attempt = 0;
             while (!$success) {
