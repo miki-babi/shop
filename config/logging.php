@@ -58,6 +58,13 @@ return [
             'ignore_exceptions' => false,
         ],
 
+        'dps_token' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/dps_token.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'replace_placeholders' => true,
+        ],
+
         'single' => [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),

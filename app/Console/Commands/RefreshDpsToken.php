@@ -68,11 +68,15 @@ class RefreshDpsToken extends Command
                     if (isset($data['access_token'], $data['expires_in'])) {
                         $ttl = max(30, $data['expires_in'] - 5); // store slightly less than actual expiry
                         \Illuminate\Support\Facades\Cache::put('dps_token_' . $i, $data['access_token'], $ttl);
-                        \Illuminate\Support\Facades\Log::info('DPS token ' . $i . ':', ['token' => $data['access_token']]);
+                        \Illuminate\Support\Facades\Log::channel('dps_token')->info('DPS token ' . $i . ':', [
+                            'token' => $data['access_token'],
+                            'ttl' => $ttl,
+                            'timestamp' => now()->toDateTimeString(),
+                        ]);
                         $this->info('Token ' . $i . ' cached.');
                         $success = true;
                     } else {
-                        \Illuminate\Support\Facades\Log::warning('DPS token request succeeded but no token returned', $data);
+                        \Illuminate\Support\Facades\Log::channel('dps_token')->warning('DPS token request succeeded but no token returned', $data);
                         $this->warn('No token in response for token ' . $i . '.');
                         break; // Stop retrying if response is successful but no token
                     }
