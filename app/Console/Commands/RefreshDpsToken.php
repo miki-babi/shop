@@ -51,23 +51,42 @@ class RefreshDpsToken extends Command
             'password' => 'Besh@Test1',
         ];
 
-        try {
-            $response = Http::timeout(30)->asForm()
-                ->withOptions(['verify' => false])
-                ->post($url, $formParams);
+        $maxAttempts = 2;
+        $attempt = 0;
+        $success = false;
+        $lastException = null;
 
-            $data = $response->json();
+        while ($attempt < $maxAttempts && !$success) {
+            try {
+                $response = Http::timeout(30)->asForm()
+                    ->withOptions(['verify' => false])
+                    ->post($url, $formParams);
 
-            if (isset($data['access_token'])) {
-                Log::info('DPS token:', ['token' => $data['access_token']]);
-                $this->info('Token logged.');
-            } else {
-                Log::warning('DPS token request succeeded but no token returned', $data);
-                $this->warn('No token in response.');
+                $data = $response->json();
+
+                if (isset($data['access_token'])) {
+                    Log::info('DPS token:', ['token' => $data['access_token']]);
+                    $this->info('Token logged.');
+                    $success = true;
+                } else {
+                    Log::warning('DPS token request succeeded but no token returned', $data);
+                    $this->warn('No token in response.');
+                    break; // No point retrying if response is successful but no token
+                }
+            } catch (\Exception $e) {
+                $lastException = $e;
+                Log::error('DPS token request failed', ['error' => $e->getMessage(), 'attempt' => $attempt + 1]);
+                $this->error('Request failed on attempt ' . ($attempt + 1) . '.');
+                $attempt++;
+                if ($attempt < $maxAttempts) {
+                    // Optionally, add a short delay before retrying
+                    sleep(1);
+                }
             }
-        } catch (\Exception $e) {
-            Log::error('DPS token request failed', ['error' => $e->getMessage()]);
-            $this->error('Request failed.');
+        }
+
+        if (!$success && $lastException) {
+            $this->error('All attempts to get DPS token failed.');
         }
     }
 }
