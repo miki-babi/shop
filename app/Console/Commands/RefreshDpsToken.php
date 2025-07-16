@@ -40,7 +40,7 @@ class RefreshDpsToken extends Command
                         $ttl = max(30, $data['expires_in'] - 5); // store slightly less than actual expiry
                         Cache::put('dps_token_' . $i, $data['access_token'], $ttl);
                         Log::channel('dps_token')->info('DPS token ' . $i . ':', [
-                            'token' => Cache::get('dps_token_' . $i),
+                            // 'token' => Cache::get('dps_token_' . $i),
                             'ttl' => $ttl,
                             'timestamp' => now()->toDateTimeString(),
                         ]);
