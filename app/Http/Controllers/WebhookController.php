@@ -130,7 +130,7 @@ class WebhookController extends Controller
                 "RecipientPOBox" => $orderData['RecipientPOBox'] ?? "",
             ],
             "EventAttributes" => [
-                "Condition" => $orderData['Condition'] ?? "100",
+                "Condition" => "100",
             ]
         ];
 
