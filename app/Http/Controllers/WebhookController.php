@@ -137,17 +137,23 @@ class WebhookController extends Controller
         Log::info("Booking order for store $storeId", ['order_body' => $body]);
 
         // Example request, replace URL and headers as needed
-        $tokens = ['dps_token_1', 'dps_token_2'];
-        $response = null;
-    foreach ($tokens as $token) {
+$tokens = ['dps_token_1', 'dps_token_2'];
+$response = null;
+
+foreach ($tokens as $token) {
+    $attempt = 0;
+    $maxAttempts = 10; // optional: add limit to prevent infinite loops
+    while (true) {
+        $attempt++;
+
         try {
-            $response = Http::retry(3, 1000)->timeout(30)->withHeaders([
+            $response = Http::timeout(30)->withHeaders([
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer ' . Cache::get($token),
             ])->post('https://dpstest.ethio.post:8200/external-api/mail-items', $body);
 
             if ($response->successful()) {
-                Log::info("Order booking successful with token $token", ['response' => $response->json()]);
+                Log::info("Order booked successfully using token $token", ['response' => $response->json()]);
                 return response()->json([
                     'success' => true,
                     'message' => 'Order booked successfully.',
@@ -155,16 +161,33 @@ class WebhookController extends Controller
                 ]);
             }
 
+            // Unauthorized → log and break to try next token
             if ($response->status() === 401) {
                 Log::warning("Token $token unauthorized", ['status' => $response->status(), 'body' => $response->body()]);
-            } else {
-                Log::error("Token $token failed", ['status' => $response->status(), 'body' => $response->body()]);
-                break; // Don't retry if error is not 401
+                break;
             }
+
+            // Other failure → log and retry
+            Log::error("Token $token failed (status: {$response->status()})", ['body' => $response->body()]);
         } catch (\Exception $e) {
-            Log::error("Error booking order with token $token", ['error' => $e->getMessage()]);
+            Log::error("Exception with token $token on attempt $attempt", ['error' => $e->getMessage()]);
         }
+
+        // Optional: stop infinite retries
+        if ($attempt >= $maxAttempts) {
+            Log::warning("Giving up on token $token after $maxAttempts attempts");
+            break;
+        }
+
+        sleep(2); // wait before retry
     }
+}
+
+return response()->json([
+    'success' => false,
+    'message' => 'Order booking failed using all tokens.'
+], 500);
+
 
         Log::info("Booking response", ['response' => $response->json()]);
 
