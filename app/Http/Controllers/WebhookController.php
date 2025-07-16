@@ -130,7 +130,7 @@ class WebhookController extends Controller
                 "RecipientPOBox" => $orderData['RecipientPOBox'] ?? "",
             ],
             "EventAttributes" => [
-                "Condition" => $orderData['Condition'] ?? "",
+                "Condition" => $orderData['Condition'] ?? "100",
             ]
         ];
 
@@ -139,24 +139,32 @@ class WebhookController extends Controller
         // Example request, replace URL and headers as needed
         $tokens = ['dps_token_1', 'dps_token_2'];
         $response = null;
-        foreach ($tokens as $token) {
-            $response = Http::withHeaders([
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . Cache::get($token),
+    foreach ($tokens as $token) {
+        try {
+            $response = Http::retry(3, 1000)->timeout(30)->withHeaders([
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Bearer ' . Cache::get($token),
             ])->post('https://dpstest.ethio.post:8200/external-api/mail-items', $body);
 
             if ($response->successful()) {
-            break;
+                Log::info("Order booking successful with token $token", ['response' => $response->json()]);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Order booked successfully.',
+                    'response' => $response->json()
+                ]);
             }
-            if ($response->status() !== 401) {
-            break;
-            }
+
             if ($response->status() === 401) {
                 Log::warning("Token $token unauthorized", ['status' => $response->status(), 'body' => $response->body()]);
             } else {
                 Log::error("Token $token failed", ['status' => $response->status(), 'body' => $response->body()]);
+                break; // Don't retry if error is not 401
             }
+        } catch (\Exception $e) {
+            Log::error("Error booking order with token $token", ['error' => $e->getMessage()]);
         }
+    }
 
         Log::info("Booking response", ['response' => $response->json()]);
 
