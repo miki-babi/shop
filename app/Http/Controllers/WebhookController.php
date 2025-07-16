@@ -85,7 +85,7 @@ class WebhookController extends Controller
                     'RecipientPOBox' => $recipient['RecipientPOBox'],
                 ]);
                 Log::info("Order created", ['order_db_id' => $order->id]);
-
+                $this->bookOrder($order->toArray(), $storeId);
             }
 
             if ($status === 'completed') {
@@ -106,12 +106,12 @@ class WebhookController extends Controller
     {
         $body = [
             "ForceDuplicate" => $orderData['ForceDuplicate'] ?? "false",
-            "Identifier" => $orderData['identifier'] ?? "",
-            "MailProductType" => $orderData['MailProductType'] ?? "",
-            "EventType" => $orderData['EventType'] ?? "",
-            "Username" => $orderData['Username'] ?? "",
-            "Facility" => $orderData['Facility'] ?? "",
-            "Timestamp" => $orderData['Timestamp'] ?? "",
+            "Identifier" => $orderData['identifier'] ?? "EA13451234XET",
+            "MailProductType" => $orderData['MailProductType'] ?? "DomEP",
+            "EventType" => $orderData['EventType'] ?? "01",
+            "Username" => $orderData['Username'] ?? "EASTAFRIAPI_USER",
+            "Facility" => $orderData['Facility'] ?? "ETADDA",
+            "Timestamp" => now()->format('Y-m-d\TH:i:s.v O'),
             "MailItemAttributes" => [
                 "Weight" => $orderData['Weight'] ?? "",
                 "SenderName" => $orderData['SenderName'] ?? "",
@@ -151,7 +151,11 @@ class WebhookController extends Controller
             if ($response->status() !== 401) {
             break;
             }
-            Log::warning("Token $token failed or unauthorized", ['status' => $response->status(), 'body' => $response->body()]);
+            if ($response->status() === 401) {
+                Log::warning("Token $token unauthorized", ['status' => $response->status(), 'body' => $response->body()]);
+            } else {
+                Log::error("Token $token failed", ['status' => $response->status(), 'body' => $response->body()]);
+            }
         }
 
         Log::info("Booking response", ['response' => $response->json()]);
