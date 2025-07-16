@@ -105,12 +105,12 @@ class WebhookController extends Controller
     private function bookOrder($orderData, $storeId)
     {
         $body = [
-            "ForceDuplicate" => $orderData['ForceDuplicate'] ?? "false",
-            "Identifier" => $orderData['identifier'] ?? "EA13451234XET",
-            "MailProductType" => $orderData['MailProductType'] ?? "DomEP",
-            "EventType" => $orderData['EventType'] ?? "01",
-            "Username" => $orderData['Username'] ?? "EASTAFRIAPI_USER",
-            "Facility" => $orderData['Facility'] ?? "ETADDA",
+            "ForceDuplicate" => "false",
+            "Identifier" => "EA13451234XET",
+            "MailProductType" => "DomEP",
+            "EventType" => "01",
+            "Username" => "EASTAFRIAPI_USER",
+            "Facility" => "ETADDA",
             "Timestamp" => now()->format('Y-m-d\TH:i:s.v O'),
             "MailItemAttributes" => [
                 "Weight" => $orderData['Weight'] ?? "",
