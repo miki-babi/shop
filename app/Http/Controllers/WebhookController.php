@@ -33,10 +33,10 @@ class WebhookController extends Controller
 
                 // Hardcoded sender details
                 $sender = [
-                    'SenderName' => 'Your Company Name',
-                    'SenderAddress' => 'Your Address',
+                    'SenderName' => 'EATH',
+                    'SenderAddress' => 'Addis Ababa, Ethiopia',
                     'SenderPostcode' => '12345',
-                    'SenderCity' => 'Your City',
+                    'SenderCity' => 'Addis Ababa',
                     'SenderPhone' => '1234567890',
                     'SenderEmail' => 'sender@example.com',
                     'SenderPOBox' => 'PO123'
@@ -52,12 +52,15 @@ class WebhookController extends Controller
                     'RecipientEmail' => $data['shipping']['email'] ?? $data['billing']['email'] ?? '',
                     'RecipientPOBox' => $data['shipping']['po_box'] ?? $data['billing']['po_box'] ?? '',
                 ];
+                do {
+                    $identifier = "EA" . mt_rand(10000000, 99999999) . "XET";
+                } while (Order::where('identifier', $identifier)->exists());
 
                 $order = Order::create([
                     'shop_id' => $storeId,
                     'order_id' => $order_id,
                     'unique_mailitem_id' => $data['unique_mailitem_id'] ?? '',
-                    'identifier' => $data['identifier'] ?? '',
+                    'identifier' => $identifier,
                     'event' => $status,
                     'ForceDuplicate' => 'false',
                     'MailProductType' => $data['mail_product_type'] ?? '',
@@ -106,7 +109,7 @@ class WebhookController extends Controller
     {
         $body = [
             "ForceDuplicate" => "false",
-            "Identifier" => "EA13451234XET",
+            "Identifier" => $orderData['identifier'],
             "MailProductType" => "DomEP",
             "EventType" => "01",
             "Username" => "EASTAFRIAPI_USER",
