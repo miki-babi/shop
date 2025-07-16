@@ -37,6 +37,7 @@ class Order extends Model
         'RecipientCity',
         'RecipientPhone',
         'RecipientEmail',
+        'order_status',
     ];
     public function shop()
     {

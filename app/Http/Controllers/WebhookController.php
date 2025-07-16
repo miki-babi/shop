@@ -7,6 +7,7 @@ use App\Models\Shop;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http; // Make sure this is at the top
+use Illuminate\Support\Facades\Cache;
 
 
 class WebhookController extends Controller
@@ -100,5 +101,61 @@ class WebhookController extends Controller
         }
 
         return response()->json(['received' => true]);
+    }
+    private function bookOrder($orderData, $storeId)
+    {
+        $body = [
+            "ForceDuplicate" => $orderData['ForceDuplicate'] ?? "false",
+            "Identifier" => $orderData['identifier'] ?? "",
+            "MailProductType" => $orderData['MailProductType'] ?? "",
+            "EventType" => $orderData['EventType'] ?? "",
+            "Username" => $orderData['Username'] ?? "",
+            "Facility" => $orderData['Facility'] ?? "",
+            "Timestamp" => $orderData['Timestamp'] ?? "",
+            "MailItemAttributes" => [
+                "Weight" => $orderData['Weight'] ?? "",
+                "SenderName" => $orderData['SenderName'] ?? "",
+                "SenderAddress" => $orderData['SenderAddress'] ?? "",
+                "SenderPostcode" => $orderData['SenderPostcode'] ?? "",
+                "SenderCity" => $orderData['SenderCity'] ?? "",
+                "SenderPhone" => $orderData['SenderPhone'] ?? "",
+                "SenderEmail" => $orderData['SenderEmail'] ?? "",
+                "SenderPOBox" => $orderData['SenderPOBox'] ?? "",
+                "RecipientName" => $orderData['RecipientName'] ?? "",
+                "RecipientAddress" => $orderData['RecipientAddress'] ?? "",
+                "RecipientPostcode" => $orderData['RecipientPostcode'] ?? "",
+                "RecipientCity" => $orderData['RecipientCity'] ?? "",
+                "RecipientPhone" => $orderData['RecipientPhone'] ?? "",
+                "RecipientEmail" => $orderData['RecipientEmail'] ?? "",
+                "RecipientPOBox" => $orderData['RecipientPOBox'] ?? "",
+            ],
+            "EventAttributes" => [
+                "Condition" => $orderData['Condition'] ?? "",
+            ]
+        ];
+
+        Log::info("Booking order for store $storeId", ['order_body' => $body]);
+
+        // Example request, replace URL and headers as needed
+        $tokens = ['dps_token_1', 'dps_token_2'];
+        $response = null;
+        foreach ($tokens as $token) {
+            $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . Cache::get($token),
+            ])->post('https://dpstest.ethio.post:8200/external-api/mail-items', $body);
+
+            if ($response->successful()) {
+            break;
+            }
+            if ($response->status() !== 401) {
+            break;
+            }
+            Log::warning("Token $token failed or unauthorized", ['status' => $response->status(), 'body' => $response->body()]);
+        }
+
+        Log::info("Booking response", ['response' => $response->json()]);
+
+        return $response->json();
     }
 }

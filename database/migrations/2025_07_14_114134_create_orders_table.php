@@ -41,6 +41,13 @@ return new class extends Migration
             $table->string('RecipientPhone')->nullable();
             $table->string('RecipientEmail')->nullable();
             $table->string('RecipientPOBox')->nullable();
+            $table->enum('order_status', [
+                'shipment-ready',
+                'booked',
+                'handed to eps',
+                'delivered',
+                'delivery-failed'
+            ])->default('shipment-ready');
             $table->timestamps();
         });
     }
