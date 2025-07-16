@@ -53,7 +53,13 @@ class RefreshDpsToken extends Command
                     }
                 } catch (\Exception $e) {
                     $attempt++;
-                    Log::channel('dps_token')->error('DPS token request failed', ['error' => $e->getMessage(), 'attempt' => $attempt, 'token' => $i]);
+                    if (strpos($e->getMessage(), 'timed out') === false) {
+                        Log::channel('dps_token')->error('DPS token request failed', [
+                            'error' => $e->getMessage(),
+                            'attempt' => $attempt,
+                            'token' => $i
+                        ]);
+                    }
                     $this->error('Request for token ' . $i . ' failed on attempt ' . $attempt . '. Retrying...');
                     
                 }
