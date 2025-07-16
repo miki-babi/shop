@@ -85,39 +85,6 @@ class WebhookController extends Controller
                 ]);
                 Log::info("Order created", ['order_db_id' => $order->id]);
 
-                function makeTokenRequest()
-                {
-                    $url = 'https://dpstest.ethio.post:8200/identity/connect/token?returnUserInfo=true';
-
-                    // Replace with your actual values
-                    $formParams = [
-                        'client_id' => 'External',
-
-                        'grant_type' => 'password', // or as required by the API
-                        
-                        'username' => 'EASTAFRIAPI_USER',
-                        'password' => 'Besh@Test1',
-                    ];
-
-                    try {
-                        $response = Http::timeout(30)->asForm()
-                            ->withOptions(['verify' => false]) // <-- this skips SSL cert validation
-                            ->post($url, $formParams);
-
-                        Log::info('Token API response', [
-                            'status' => $response->status(),
-                            'body' => $response->body(),
-                        ]);
-                        return $response->json();
-                    } catch (\Exception $e) {
-                        Log::error('Error making token API request', [
-                            'message' => $e->getMessage(),
-                            'trace' => $e->getTraceAsString(),
-                        ]);
-                        return null;
-                    }
-                }
-                makeTokenRequest();
             }
 
             if ($status === 'completed') {
