@@ -18,7 +18,7 @@
         <h2 class="text-2xl font-bold mb-6 text-center">Order Details</h2>
         <p class="mb-2"><span class="font-semibold">Order ID:</span> {{ $order->order_id }}</p>
         <p class="mb-2"><span class="font-semibold">Branch:</span> {{ $order->shop->name }}</p>
-        <p class="mb-2"><span class="font-semibold">Date:</span> 
+        <p class="mb-2"><span class="font-semibold">Order Date:</span> 
             {{-- {{ $order->Timestamp }} --}}
             @php
                 $time= \Carbon\Carbon::parse($order->Timestamp)->format('H:i:s');
