@@ -35,7 +35,7 @@ Route::post('/logout', [SessionController::class, 'logout'])->name('logout');
 //     return view('dashboard' , compact('deliveries'));
 // })->name('dashboard');
 Route::get('/orders/fetch', function () {
-    $orders = \App\Models\Order::where('order_status', 'booked')->latest()->get();
+    $orders = \App\Models\Order::where('order_status', 'booked')->get();
 
     return response()->json($orders);
 })->name('orders.fetch');
