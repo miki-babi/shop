@@ -57,13 +57,10 @@ class WebhookController extends Controller
                     $identifier = "EA" . mt_rand(10000000, 99999999) . "XET";
                 } while (Order::where('identifier', $identifier)->exists());
 
-$input = $data['date_modified'] ?? null;
-$date = Carbon::createFromFormat("Y-m-d\TH:i:s.v", $input, 'Africa/Addis_Ababa');
-
-$milliseconds = substr($date->format('u'), 0, 3);
-$formatted = $date->format("Y-m-d\TH:i:s") . ".$milliseconds " . $date->format("P");
-
-echo $formatted;
+$input = "2025-07-16T18:28:01";
+$date = Carbon::parse($input, 'Africa/Addis_Ababa');
+$formatted = $date->format("Y-m-d\TH:i:s.000 P");
+Log::debug("Formatted timestamp", ['formatted' => $formatted]);
 
                 $order = Order::create([
                     'shop_id' => $storeId,
