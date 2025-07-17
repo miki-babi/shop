@@ -20,7 +20,7 @@
             @php
                 $time= \Carbon\Carbon::parse($order->Timestamp)->format('H:i:s');
                 $date = \Carbon\Carbon::parse($order->Timestamp)->format('Y-m-d');
-                echo $date . ' ' . $time;
+                echo $date ;
             @endphp
         </p>
         <p class="mb-2"><span class="font-semibold">Customer Name:</span> {{ $order->RecipientName }}</p>
