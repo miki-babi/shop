@@ -51,7 +51,7 @@ Route::get('/dashboard/{id}', function ($id) {
     }
    $order = \App\Models\Order::where('order_status', 'booked')->
    where('id',$id)
-   ->get();
+   ->first();;
 //    dd($order);
     return view('order.index', compact('order'));
 })->name('detail');
