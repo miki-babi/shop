@@ -165,7 +165,7 @@ class WebhookController extends Controller
                     if ($response->successful()) {
                         
                         $mailItemId = $response->json()['mailItemUniqueId'] ?? null;
-                        Order::where('id', $orderId)->update(['unique_mailitem_id' => $mailItemId], ['order_status' => 'booked']);
+                        Order::where('id', $orderId)->update(['unique_mailitem_id' => $mailItemId,'order_status' => 'booked']);
                         Log::info("Order updated with mail item ID", ['order_id' => $orderId, 'mail_item_id' => $mailItemId]);
                         Log::info("Order booked successfully using token $token", ['response' => $response->json()]);
                         return response()->json([
