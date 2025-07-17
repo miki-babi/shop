@@ -10,6 +10,11 @@
 <body class="bg-gray-100 min-h-screen">
     <div class="container mx-auto py-8">
         <h1 class="text-3xl font-bold mb-8 text-center text-gray-800">Booked Orders Dashboard</h1>
+        @if($orders->isEmpty())
+            <div class="bg-white rounded-lg shadow-md p-8 text-center text-gray-500 text-lg">
+                No orders found.
+            </div>
+        @else
         <div class="overflow-x-auto">
             <table class="min-w-full bg-white rounded-lg shadow-md">
                 <thead>
@@ -36,7 +41,7 @@
                             </td>
                             <td class="py-3 px-6 flex gap-2">
                                 <a href="{{ route('detail', ['id' => $order->id]) }}" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded shadow focus:outline-none focus:ring-2 focus:ring-green-400">Print</a>
-                                <form action="{{ route('handover',['id' => $order->id]) }}" method="POST" style="display:inline;">
+                                <form action="{{ route('handover',['id' => $order->id]) }}" method="POST" style="display:inline;" onsubmit="return confirmHandover(event)">
                                     @csrf
                                     <button type="submit" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-1 px-3 rounded shadow focus:outline-none focus:ring-2 focus:ring-indigo-400">Delivery to EPS</button>
                                 </form>
@@ -46,12 +51,20 @@
                 </tbody>
             </table>
         </div>
+        @endif
     </div>
     <script>
         function printOrder(orderId) {
             // Print only the row for the selected order
             // For now, just print the whole page
             window.print();
+        }
+        function confirmHandover(event) {
+            if (!confirm('Are you sure you want to hand this order over to EPS?')) {
+                event.preventDefault();
+                return false;
+            }
+            return true;
         }
     </script>
     <style media="print">
