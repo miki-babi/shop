@@ -31,6 +31,7 @@
         </div>
         <div class="flex justify-center">
             <button onclick="window.print()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded shadow focus:outline-none focus:ring-2 focus:ring-blue-400">Print</button>
+            <a href="{{ rouet('dashboard') }}" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded shadow focus:outline-none focus:ring-2 focus:ring-blue-400">back</a>
         </div>
     </div>
 </body>
