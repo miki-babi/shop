@@ -5,6 +5,9 @@ use App\Http\Controllers\WebhookController;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Picqer\Barcode\BarcodeGeneratorPNG;
 use App\Http\Controllers\SessionController;
+// use Illuminate\Container\Attributes\Auth;
+use Illuminate\Support\Facades\Auth ;
+
 
 Route::get('/barcode/{code}', function ($code) {
     $generator = new BarcodeGeneratorPNG();
@@ -33,7 +36,15 @@ Route::post('/logout', [SessionController::class, 'logout'])->name('logout');
 // })->name('dashboard');
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+
+    if (!Auth::check()) {
+        return redirect()->route('login');
+    }
+
+   $orders = \App\Models\Order::where('order_status', 'booked')->get();
+
+
+    return view('dashboard', compact('orders'));
 })->name('dashboard');
 
 
