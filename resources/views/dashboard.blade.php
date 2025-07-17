@@ -55,8 +55,8 @@
                                         <td class="py-3 px-6 flex gap-2">
                                             <a href="{{ route('detail', ['id' => $order->id]) }}"
                                                 class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded shadow">Print</a>
-                                            <form action="{{ route('handover', ['id' => $order->id]) }}" method="POST"
-                                                onsubmit="return ajaxHandover(event, this, {{ $order->id }})">
+                                            <form action="{{ route('handover', ['id' => $order->id]) }}" method="POST">
+                                                {{-- onsubmit="return ajaxHandover(event, this, {{ $order->id }})"> --}}
                                                 @csrf
                                                 <button type="submit"
                                                     class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-1 px-3 rounded shadow">Delivery
@@ -75,40 +75,40 @@
         <div id="alert-container" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50"></div>
 
         <script>
-            async function ajaxHandover(event, form, orderId) {
-                event.preventDefault();
-                if (!confirm('Are you sure you want to hand this order over to EPS?')) return false;
+            // async function ajaxHandover(event, form, orderId) {
+            //     event.preventDefault();
+            //     if (!confirm('Are you sure you want to hand this order over to EPS?')) return false;
 
-                const url = form.action;
-                const token = form.querySelector('input[name="_token"]').value;
+            //     const url = form.action;
+            //     const token = form.querySelector('input[name="_token"]').value;
 
-                try {
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': token,
-                            'Accept': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest',
-                        }
-                    });
+            //     try {
+            //         const response = await fetch(url, {
+            //             method: 'POST',
+            //             headers: {
+            //                 'X-CSRF-TOKEN': token,
+            //                 'Accept': 'application/json',
+            //                 'X-Requested-With': 'XMLHttpRequest',
+            //             }
+            //         });
 
-                    if (response.ok) {
-                        form.closest('tr').remove();
-                        showAlert('Order handed over to EPS successfully.', 'success');
+            //         if (response.ok) {
+            //             form.closest('tr').remove();
+            //             showAlert('Order handed over to EPS successfully.', 'success');
 
-                        if (document.querySelectorAll('tbody tr').length === 0) {
-                            document.querySelector('#order-table-container').innerHTML = `
-                                <div class="bg-white rounded-lg shadow-md p-8 text-center text-gray-500 text-lg">
-                                    No orders found.
-                                </div>`;
-                        }
-                    } else {
-                        showAlert('Failed to hand over order.', 'error');
-                    }
-                } catch {
-                    showAlert('Network error occurred.', 'error');
-                }
-            }
+            //             if (document.querySelectorAll('tbody tr').length === 0) {
+            //                 document.querySelector('#order-table-container').innerHTML = `
+            //                     <div class="bg-white rounded-lg shadow-md p-8 text-center text-gray-500 text-lg">
+            //                         No orders found.
+            //                     </div>`;
+            //             }
+            //         } else {
+            //             showAlert('Failed to hand over order.', 'error');
+            //         }
+            //     } catch {
+            //         showAlert('Network error occurred.', 'error');
+            //     }
+            // }
 
             function showAlert(message, type) {
                 const alertContainer = document.getElementById('alert-container');
