@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http; // Make sure this is at the top
 use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
+use App\Models\User;
 
 
 class WebhookController extends Controller
@@ -29,7 +30,7 @@ class WebhookController extends Controller
             // Process based on status
             if ($status === 'shipment-ready') {
                 Log::info("Processing shipment-ready for order", ['order_id' => $order_id, 'store' => $store]);
-                $storeId = Shop::where('name', $store)->first()->id ?? null;
+                $storeId = User::where('shop', $store)->first()->id ?? null;
                 Log::debug("Resolved storeId", ['storeId' => $storeId]);
 
                 // Hardcoded sender details

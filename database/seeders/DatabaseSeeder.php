@@ -15,14 +15,14 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        // User::factory()->create([
-        //     // 'name' => 'Test User',
-        //     'username' => 'shopadmin',
-        //     'password' => bcrypt('password123'),
-        // ]);
+        User::factory()->create([
+            'shop' => 'kadisco',
+            'username' => 'shopadmin3',
+            'password' => bcrypt('password123'),
+        ]);
 
-        \App\Models\Shop::create(['name' => 'mexico']);
-        \App\Models\Shop::create(['name' => 'kadisco']);
-        \App\Models\Shop::create(['name' => 'ayat']);
+        // \App\Models\Shop::create(['name' => 'mexico']);
+        // \App\Models\Shop::create(['name' => 'kadisco']);
+        // \App\Models\Shop::create(['name' => 'ayat']);
     }
 }

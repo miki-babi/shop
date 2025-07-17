@@ -10,7 +10,7 @@ class Order extends Model
     /** @use HasFactory<\Database\Factories\OrderFactory> */
     use HasFactory;
     protected $fillable = [
-        'shop_id',
+        'shop',
         'order_id',
         'unique_mailitem_id',
         'identifier',
@@ -41,6 +41,6 @@ class Order extends Model
     ];
     public function shop()
     {
-        return $this->belongsTo(Shop::class);
+        return $this->belongsTo(User::class);
     }
 }
