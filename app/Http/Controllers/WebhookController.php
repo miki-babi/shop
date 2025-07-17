@@ -64,7 +64,7 @@ class WebhookController extends Controller
                 Log::debug("Formatted timestamp", ['formatted' => $formatted]);
 
                 $order = Order::create([
-                    'shop_id' => $storeId,
+                    'shop' => $storeId,
                     'order_id' => $order_id,
                     'unique_mailitem_id' => $data['unique_mailitem_id'] ?? '',
                     'identifier' => $identifier,
