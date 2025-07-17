@@ -14,7 +14,8 @@
             <p>Customer Name: {{ $order->customer_name }}</p>
             <p>Order Status: {{ $order->order_status }}</p>
             <hr>
-            {!! DNS1D::getBarcodeHTML($order->identifier, "C128") !!}
+            <img src="{{ url('/barcode/' . $order->identifier) }}" alt="Barcode">
+
         @endforeach
     </div>
 </body>
