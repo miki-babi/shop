@@ -112,7 +112,7 @@ Log::debug("Formatted timestamp", ['formatted' => $formatted]);
 
         return response()->json(['received' => true]);
     }
-    private function bookOrder($orderData, $storeId)
+    private function bookOrder($orderData, $storeId, $orderId)
     {
         $body = [
             "ForceDuplicate" => "false",
@@ -170,8 +170,8 @@ foreach ($tokens as $token) {
                     'response' => $response->json()
                 ]);
                 $mailItemId = $response->json()['mailItemUniqueId'] ?? null;
-                Order::where('id', $order_id)->update(['unique_mailitem_id' => $mailItemId]);
-                Log::info("Order updated with mail item ID", ['order_id' => $order_id, 'mail_item_id' => $mailItemId]);
+                Order::where('id', $orderId)->update(['unique_mailitem_id' => $mailItemId]);
+                Log::info("Order updated with mail item ID", ['order_id' => $orderId, 'mail_item_id' => $mailItemId]);
                 break; // exit the retry loop on success
             }
 
