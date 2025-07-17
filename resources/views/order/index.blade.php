@@ -8,6 +8,9 @@
         button {
             display: none;
         }
+        #back {
+            display: none;
+        }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
@@ -29,9 +32,9 @@
         <div class="flex justify-center mb-4">
             <img src="{{ url('/barcode/' . $order->identifier) }}" alt="Barcode" class="h-24">
         </div>
-        <div class="flex justify-center">
+        <div class="flex justify-between">
             <button onclick="window.print()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded shadow focus:outline-none focus:ring-2 focus:ring-blue-400">Print</button>
-            <a href="{{ route('dashboard') }}" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded shadow focus:outline-none focus:ring-2 focus:ring-blue-400">back</a>
+            <a id="back" href="{{ route('dashboard') }}" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded shadow focus:outline-none focus:ring-2 focus:ring-blue-400">back</a>
         </div>
     </div>
 </body>
