@@ -8,7 +8,14 @@
 
 </head>
 <body>
-    <div id="app">
+    <div >
+        @foreach ($orders as  $order)
+            <p>Order ID: {{ $order->id }}</p>
+            <p>Customer Name: {{ $order->customer_name }}</p>
+            <p>Order Status: {{ $order->order_status }}</p>
+            <hr>
+            {!! DNS1D::getBarcodeHTML($order->identifier, "C128") !!}
+        @endforeach
     </div>
 </body>
 </html>
