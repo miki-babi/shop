@@ -11,12 +11,19 @@
     <div >
         @foreach ($orders as  $order)
             <p>Order ID: {{ $order->id }}</p>
-            <p>Customer Name: {{ $order->customer_name }}</p>
+            <p>Customer Name: {{ $order->receiever }}</p>
             <p>Order Status: {{ $order->order_status }}</p>
             <hr>
             <img src="{{ url('/barcode/' . $order->identifier) }}" alt="Barcode">
+            <button onclick="window.print()">Print</button>
 
         @endforeach
     </div>
+    <style media="print">
+  button {
+    display: none;
+  }
+</style>
+
 </body>
 </html>
