@@ -57,10 +57,10 @@ class WebhookController extends Controller
                     $identifier = "EA" . mt_rand(10000000, 99999999) . "XET";
                 } while (Order::where('identifier', $identifier)->exists());
 
-$input = "2025-07-16T18:28:01";
-$date = Carbon::parse($input, 'Africa/Addis_Ababa');
-$formatted = $date->format("Y-m-d\TH:i:s.000 P");
-Log::debug("Formatted timestamp", ['formatted' => $formatted]);
+                $input = "2025-07-16T18:28:01";
+                $date = Carbon::parse($input, 'Africa/Addis_Ababa');
+                $formatted = $date->format("Y-m-d\TH:i:s.000 P");
+                Log::debug("Formatted timestamp", ['formatted' => $formatted]);
 
                 $order = Order::create([
                     'shop_id' => $storeId,
@@ -95,7 +95,7 @@ Log::debug("Formatted timestamp", ['formatted' => $formatted]);
                 ]);
                 Log::info("Order created", ['order_db_id' => $order->id]);
                 $order_id = $order->id;
-                $this->bookOrder($order->toArray(), $storeId , $order_id);
+                $this->bookOrder($order->toArray(), $storeId, $order_id);
             }
 
             if ($status === 'completed') {
@@ -147,60 +147,61 @@ Log::debug("Formatted timestamp", ['formatted' => $formatted]);
         Log::info("Booking order for store $storeId", ['order_body' => $body]);
 
         // Example request, replace URL and headers as needed
-$tokens = ['dps_token_1', 'dps_token_2'];
-$response = null;
+        $tokens = ['dps_token_1', 'dps_token_2'];
+        $response = null;
 
-foreach ($tokens as $token) {
-    $attempt = 0;
-    $maxAttempts = 10; // optional: add limit to prevent infinite loops
-    while (true) {
-        $attempt++;
+        foreach ($tokens as $token) {
+            $attempt = 0;
+            $maxAttempts = 10; // optional: add limit to prevent infinite loops
+            while (true) {
+                $attempt++;
 
-        try {
-            $response = Http::timeout(30)->withHeaders([
-                'Content-Type' => 'application/json',
-                'Authorization' => 'Bearer ' . Cache::get($token),
-            ])->post('https://dpstest.ethio.post:8200/external-api/mail-items', $body);
+                try {
+                    $response = Http::timeout(30)->withHeaders([
+                        'Content-Type' => 'application/json',
+                        'Authorization' => 'Bearer ' . Cache::get($token),
+                    ])->post('https://dpstest.ethio.post:8200/external-api/mail-items', $body);
 
-            if ($response->successful()) {
-                Log::info("Order booked successfully using token $token", ['response' => $response->json()]);
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Order booked successfully.',
-                    'response' => $response->json()
-                ]);
-                $mailItemId = $response->json()['mailItemUniqueId'] ?? null;
-                Order::where('id', $orderId)->update(['unique_mailitem_id' => $mailItemId]);
-                Log::info("Order updated with mail item ID", ['order_id' => $orderId, 'mail_item_id' => $mailItemId]);
-                break; // exit the retry loop on success
+                    if ($response->successful()) {
+                        
+                        $mailItemId = $response->json()['mailItemUniqueId'] ?? null;
+                        Order::where('id', $orderId)->update(['unique_mailitem_id' => $mailItemId]);
+                        Log::info("Order updated with mail item ID", ['order_id' => $orderId, 'mail_item_id' => $mailItemId]);
+                        Log::info("Order booked successfully using token $token", ['response' => $response->json()]);
+                        return response()->json([
+                            'success' => true,
+                            'message' => 'Order booked successfully.',
+                            'response' => $response->json()
+                        ]);
+                        break; // exit the retry loop on success
+                    }
+
+                    // Unauthorized → log and break to try next token
+                    if ($response->status() === 401) {
+                        Log::warning("Token $token unauthorized", ['status' => $response->status(), 'body' => $response->body()]);
+                        break;
+                    }
+
+                    // Other failure → log and retry
+                    Log::error("Token $token failed (status: {$response->status()})", ['body' => $response->body()]);
+                } catch (\Exception $e) {
+                    Log::error("Exception with token $token on attempt $attempt", ['error' => $e->getMessage()]);
+                }
+
+                // Optional: stop infinite retries
+                if ($attempt >= $maxAttempts) {
+                    Log::warning("Giving up on token $token after $maxAttempts attempts");
+                    break;
+                }
+
+                sleep(2); // wait before retry
             }
-
-            // Unauthorized → log and break to try next token
-            if ($response->status() === 401) {
-                Log::warning("Token $token unauthorized", ['status' => $response->status(), 'body' => $response->body()]);
-                break;
-            }
-
-            // Other failure → log and retry
-            Log::error("Token $token failed (status: {$response->status()})", ['body' => $response->body()]);
-        } catch (\Exception $e) {
-            Log::error("Exception with token $token on attempt $attempt", ['error' => $e->getMessage()]);
         }
 
-        // Optional: stop infinite retries
-        if ($attempt >= $maxAttempts) {
-            Log::warning("Giving up on token $token after $maxAttempts attempts");
-            break;
-        }
-
-        sleep(2); // wait before retry
-    }
-}
-
-return response()->json([
-    'success' => false,
-    'message' => 'Order booking failed using all tokens.'
-], 500);
+        return response()->json([
+            'success' => false,
+            'message' => 'Order booking failed using all tokens.'
+        ], 500);
 
 
         Log::info("Booking response", ['response' => $response->json()]);
