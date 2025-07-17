@@ -49,7 +49,7 @@ Route::get('/dashboard/{id}', function ($id) {
     if (!Auth::check()) {
         return redirect()->route('login');
     }
-   $orders = \App\Models\Order::where('order_status', 'booked')->
+   $order = \App\Models\Order::where('order_status', 'booked')->
    where('id',$id)
    ->get();
     return view('order.index', compact('order'));
