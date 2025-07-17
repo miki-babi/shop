@@ -34,7 +34,11 @@ Route::post('/logout', [SessionController::class, 'logout'])->name('logout');
 //     $deliveries = Delivery::where('farmer_id', Auth::id())->get();
 //     return view('dashboard' , compact('deliveries'));
 // })->name('dashboard');
+Route::get('/orders/fetch', function () {
+    $orders = \App\Models\Order::where('order_status', 'booked')->latest()->get();
 
+    return response()->json($orders);
+})->name('orders.fetch');
 Route::get('/dashboard', function () {
 
     if (!Auth::check()) {
