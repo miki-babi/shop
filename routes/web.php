@@ -40,12 +40,19 @@ Route::get('/dashboard', function () {
     if (!Auth::check()) {
         return redirect()->route('login');
     }
-
    $orders = \App\Models\Order::where('order_status', 'booked')->get();
-
-
     return view('dashboard', compact('orders'));
 })->name('dashboard');
+Route::get('/dashboard/{id}', function ($id) {
 
+
+    if (!Auth::check()) {
+        return redirect()->route('login');
+    }
+   $orders = \App\Models\Order::where('order_status', 'booked')->
+   where('id',$id)
+   ->get();
+    return view('order.index', compact('order'));
+})->name('detail');
 
 Route::post('/webhook/{store}', [WebhookController::class, 'handle'])->withoutMiddleware([VerifyCsrfToken::class]);
