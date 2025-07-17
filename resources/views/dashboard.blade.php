@@ -12,7 +12,7 @@
     <body class="bg-gray-100 min-h-screen">
         <div class="container mx-auto py-8">
             <h1 class="text-3xl font-bold mb-8 text-center text-gray-800">Booked Orders Dashboard</h1>
-            <div class="flex justify-between">
+            <div class="flex justify-end mb-4">
                 <form action="{{ route('logout') }}" method="POST"
                     onsubmit="return confirm('Are you sure you want to logout?')">
                     @csrf
