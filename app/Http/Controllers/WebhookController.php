@@ -30,7 +30,7 @@ class WebhookController extends Controller
             // Process based on status
             if ($status === 'shipment-ready') {
                 Log::info("Processing shipment-ready for order", ['order_id' => $order_id, 'store' => $store]);
-                $storeId = User::where('shop', $store)->first()->id ?? null;
+                $storeId = User::where('user_id', $store)->first()->id ?? null;
                 Log::debug("Resolved storeId", ['storeId' => $storeId]);
 
                 // Hardcoded sender details
@@ -64,7 +64,7 @@ class WebhookController extends Controller
                 Log::debug("Formatted timestamp", ['formatted' => $formatted]);
 
                 $order = Order::create([
-                    'shop' => $storeId,
+                    'user_id' => $storeId,
                     'order_id' => $order_id,
                     'unique_mailitem_id' => $data['unique_mailitem_id'] ?? '',
                     'identifier' => $identifier,
