@@ -36,7 +36,7 @@
                             </td>
                             <td class="py-3 px-6 flex gap-2">
                                 <a href="{{ route('detail', ['id' => $order->id]) }}" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded shadow focus:outline-none focus:ring-2 focus:ring-green-400">Print</a>
-                                <form action="#" method="POST" style="display:inline;">
+                                <form action="{{ route('handover',['id' => $order->id]) }}" method="POST" style="display:inline;">
                                     @csrf
                                     <button type="submit" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-1 px-3 rounded shadow focus:outline-none focus:ring-2 focus:ring-indigo-400">Delivery to EPS</button>
                                 </form>

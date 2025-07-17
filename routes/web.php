@@ -45,7 +45,6 @@ Route::get('/dashboard', function () {
 })->name('dashboard');
 Route::get('/dashboard/{id}', function ($id) {
 
-
     if (!Auth::check()) {
         return redirect()->route('login');
     }
@@ -55,5 +54,14 @@ Route::get('/dashboard/{id}', function ($id) {
 //    dd($order);
     return view('order.index', compact('order'));
 })->name('detail');
+Route::post('/dashboard/{id}', function ($id) {
+    if (!Auth::check()) {
+        return redirect()->route('login');
+    }
+    $order = \App\Models\Order::findOrFail($id);
+    $order->order_status = 'handed to eps';
+    $order->save();
+    return redirect()->route('dashboard')->with('success', 'Order handed over to EPS successfully.');
+})->name('handover');
 
 Route::post('/webhook/{store}', [WebhookController::class, 'handle'])->withoutMiddleware([VerifyCsrfToken::class]);
