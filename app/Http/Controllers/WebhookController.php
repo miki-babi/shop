@@ -94,7 +94,8 @@ Log::debug("Formatted timestamp", ['formatted' => $formatted]);
                     'RecipientPOBox' => $recipient['RecipientPOBox'],
                 ]);
                 Log::info("Order created", ['order_db_id' => $order->id]);
-                $this->bookOrder($order->toArray(), $storeId);
+                $order_id = $order->id;
+                $this->bookOrder($order->toArray(), $storeId , $order_id);
             }
 
             if ($status === 'completed') {
@@ -168,6 +169,10 @@ foreach ($tokens as $token) {
                     'message' => 'Order booked successfully.',
                     'response' => $response->json()
                 ]);
+                $mailItemId = $response->json()['mailItemUniqueId'] ?? null;
+                Order::where('id', $order_id)->update(['unique_mailitem_id' => $mailItemId]);
+                Log::info("Order updated with mail item ID", ['order_id' => $order_id, 'mail_item_id' => $mailItemId]);
+                break; // exit the retry loop on success
             }
 
             // Unauthorized → log and break to try next token
