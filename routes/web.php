@@ -50,9 +50,9 @@ Route::get('/dashboard/{id}', function ($id) {
         return redirect()->route('login');
     }
    $order = \App\Models\Order::where('order_status', 'booked')->
-   where('id',$id)
+   where('id',$id)->with('shop')
    ->first();;
-//    dd($order);
+   dd($order);
     return view('order.index', compact('order'));
 })->name('detail');
 
