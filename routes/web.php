@@ -53,7 +53,7 @@ Route::get('/dashboard/{id}', function ($id) {
         return redirect()->route('login');
     }
    $order = \App\Models\Order::where('order_status', 'booked')->
-   where('id',$id)->with('shop')
+   where('id',$id)->with('user')
    ->first();;
    dd($order);
     return view('order.index', compact('order'));
