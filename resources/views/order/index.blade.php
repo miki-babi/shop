@@ -19,7 +19,7 @@
             {{-- {{ $order->Timestamp }} --}}
             @php
                 $time= \Carbon\Carbon::parse($order->Timestamp)->format('H:i:s');
-                $date = \Carbon\Carbon::parse($order->Timestamp)->format('Y-m-d');
+                $date = \Carbon\Carbon::parse($order->Timestamp)->format('d-m-Y');
                 echo $date ;
             @endphp
         </p>
