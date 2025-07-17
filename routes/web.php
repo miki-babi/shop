@@ -32,4 +32,9 @@ Route::post('/logout', [SessionController::class, 'logout'])->name('logout');
 //     return view('dashboard' , compact('deliveries'));
 // })->name('dashboard');
 
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->name('dashboard');
+
+
 Route::post('/webhook/{store}', [WebhookController::class, 'handle'])->withoutMiddleware([VerifyCsrfToken::class]);
