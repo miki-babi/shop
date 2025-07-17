@@ -104,8 +104,8 @@
             setTimeout(() => alertDiv.remove(), 2500);
         }
 
-        // 🔁 Auto-refresh every 10 seconds
-        setInterval(fetchNewOrders, 10000);
+        // Auto-refresh every 3 seconds
+        setInterval(fetchNewOrders, 3000);
 
         async function fetchNewOrders() {
             try {
