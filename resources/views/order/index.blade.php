@@ -27,7 +27,6 @@
             @endphp
         </p>
         <p class="mb-2"><span class="font-semibold">Customer Name:</span> {{ $order->RecipientName }}</p>
-        <p class="mb-4"><span class="font-semibold">Order Status:</span> {{ $order->order_status }}</p>
         <hr class="mb-4">
         <div class="flex justify-center mb-4">
             <img src="{{ url('/barcode/' . $order->identifier) }}" alt="Barcode" class="h-24">
