@@ -14,7 +14,7 @@
             <h1 class="text-3xl font-bold mb-8 text-center text-gray-800">Booked Orders Dashboard</h1>
             <div class="flex justify-between">
                 <form action="{{ route('logout') }}" method="POST"
-                    onsubmit="return ajaxHandover(event, this, {{ $order->id }})">
+                    onsubmit="return confirm('Are you sure you want to logout?')">
                     @csrf
                     <button type="submit"
                         class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded shadow">Logout</button>
