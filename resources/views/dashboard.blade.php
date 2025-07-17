@@ -41,7 +41,7 @@
                             </td>
                             <td class="py-3 px-6 flex gap-2">
                                 <a href="{{ route('detail', ['id' => $order->id]) }}" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded shadow focus:outline-none focus:ring-2 focus:ring-green-400">Print</a>
-                                <form action="{{ route('handover',['id' => $order->id]) }}" method="POST" style="display:inline;" onsubmit="return confirmHandover(event)">
+                                <form action="{{ route('handover',['id' => $order->id]) }}" method="POST" style="display:inline;" onsubmit="return ajaxHandover(event, this, {{ $order->id }})">
                                     @csrf
                                     <button type="submit" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-1 px-3 rounded shadow focus:outline-none focus:ring-2 focus:ring-indigo-400">Delivery to EPS</button>
                                 </form>
@@ -53,10 +53,9 @@
         </div>
         @endif
     </div>
+    <div id="alert-container" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50"></div>
     <script>
         function printOrder(orderId) {
-            // Print only the row for the selected order
-            // For now, just print the whole page
             window.print();
         }
         function confirmHandover(event) {
@@ -65,6 +64,53 @@
                 return false;
             }
             return true;
+        }
+        async function ajaxHandover(event, form, orderId) {
+            event.preventDefault();
+            if (!confirm('Are you sure you want to hand this order over to EPS?')) {
+                return false;
+            }
+            const url = form.action;
+            const token = form.querySelector('input[name="_token"]').value;
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': token,
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                });
+                if (response.ok) {
+                    // Remove the row
+                    const row = form.closest('tr');
+                    row.remove();
+                    showAlert('Order handed over to EPS successfully.', 'success');
+                    // If no more rows, show empty message
+                    if (document.querySelectorAll('tbody tr').length === 0) {
+                        document.querySelector('table').remove();
+                        const emptyDiv = document.createElement('div');
+                        emptyDiv.className = 'bg-white rounded-lg shadow-md p-8 text-center text-gray-500 text-lg';
+                        emptyDiv.textContent = 'No orders found.';
+                        document.querySelector('.container').appendChild(emptyDiv);
+                    }
+                } else {
+                    showAlert('Failed to hand over order. Please try again.', 'error');
+                }
+            } catch (e) {
+                showAlert('An error occurred. Please try again.', 'error');
+            }
+            return false;
+        }
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alert-container');
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `mb-4 px-6 py-3 rounded shadow text-white font-semibold ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`;
+            alertDiv.textContent = message;
+            alertContainer.appendChild(alertDiv);
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 2500);
         }
     </script>
     <style media="print">
