@@ -14,8 +14,8 @@
     <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
         <h2 class="text-2xl font-bold mb-6 text-center">Order Details</h2>
         <p class="mb-2"><span class="font-semibold">Order ID:</span> {{ $order->order_id }}</p>
-        <p class="mb-2"><span class="font-semibold">Order ID:</span> {{ $order->shop->name }}</p>
-        <p class="mb-2"><span class="font-semibold">Order ID:</span> {{ $order->timestamp }}</p>
+        <p class="mb-2"><span class="font-semibold">Branch:</span> {{ $order->shop->name }}</p>
+        <p class="mb-2"><span class="font-semibold">Date:</span> {{ $order->Timestamp }}</p>
         <p class="mb-2"><span class="font-semibold">Customer Name:</span> {{ $order->RecipientName }}</p>
         <p class="mb-4"><span class="font-semibold">Order Status:</span> {{ $order->order_status }}</p>
         <hr class="mb-4">
