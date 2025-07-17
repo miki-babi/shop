@@ -39,7 +39,7 @@ class Order extends Model
         'RecipientEmail',
         'order_status',
     ];
-    public function shop()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
