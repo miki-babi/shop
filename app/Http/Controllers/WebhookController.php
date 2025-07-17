@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http; // Make sure this is at the top
 use Illuminate\Support\Facades\Cache;
+use Carbon\Carbon;
 
 
 class WebhookController extends Controller
@@ -56,6 +57,14 @@ class WebhookController extends Controller
                     $identifier = "EA" . mt_rand(10000000, 99999999) . "XET";
                 } while (Order::where('identifier', $identifier)->exists());
 
+$input = $data['date_modified'] ?? null;
+$date = Carbon::createFromFormat("Y-m-d\TH:i:s.v", $input, 'Africa/Addis_Ababa');
+
+$milliseconds = substr($date->format('u'), 0, 3);
+$formatted = $date->format("Y-m-d\TH:i:s") . ".$milliseconds " . $date->format("P");
+
+echo $formatted;
+
                 $order = Order::create([
                     'shop_id' => $storeId,
                     'order_id' => $order_id,
@@ -67,7 +76,7 @@ class WebhookController extends Controller
                     'EventType' => $data['event_type'] ?? '',
                     'Username' => $data['username'] ?? '',
                     'Facility' => $data['facility'] ?? '',
-                    'Timestamp' => $data['timestamp'] ?? '',
+                    'Timestamp' => $formatted ?? now()->format('Y-m-d\TH:i:s.v O'),
                     'Weight' => $data['weight'] ?? '',
                     'Condition' => $data['condition'] ?? '',
                     // Sender fields
@@ -114,7 +123,7 @@ class WebhookController extends Controller
             "EventType" => "01",
             "Username" => "EASTAFRIAPI_USER",
             "Facility" => "ETADDA",
-            "Timestamp" => now()->format('Y-m-d\TH:i:s.v O'),
+            "Timestamp" => $orderData['Timestamp'] ?? now()->format('Y-m-d\TH:i:s.v O'),
             "MailItemAttributes" => [
                 "Weight" => $orderData['Weight'] ?? "",
                 "SenderName" => $orderData['SenderName'] ?? "",
